@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Currency Converter</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #6dd5fa, #2980b9);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .image-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .image-row img {
+      width: 300px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .converter {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      width: 350px;
+    }
+
+    .converter h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin: 15px 0;
+    }
+
+    label, select, input {
+      width: 100%;
+      font-size: 16px;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background-color: #27ae60;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="image-row">
+    <img src="https://thumbs.dreamstime.com/z/indian-rupees-currency-notes-verified-different-colors-texture-values-181073182.jpg" alt="Indian Currency">
+    <img src="https://c8.alamy.com/comp/2FWP9BP/american-dollar-bills-usd-currency-background-image-2FWP9BP.jpg" alt="US Currency">
+  </div>
+
+  <div class="converter">
+    <h2>Currency Converter</h2>
+
+    <div class="form-group">
+      <label for="from">From Currency:</label>
+      <select id="from">
+        <option value="USD">USD</option>
+        <option value="INR">INR</option>
+        <option value="EUR">EUR</option>
+        <option value="GBP">GBP</option>
+        <option value="JPY">JPY</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="to">To Currency:</label>
+      <select id="to">
+        <option value="INR">INR</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="GBP">GBP</option>
+        <option value="JPY">JPY</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="amount">Amount:</label>
+      <input type="number" id="amount" placeholder="Enter amount" />
+    </div>
+
+    <button onclick="convertCurrency()">Convert</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function convertCurrency() {
+      const from = document.getElementById("from").value;
+      const to = document.getElementById("to").value;
+      const amount = document.getElementById("amount").value;
+
+      if (!amount || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.exchangerate-api.com/v4/latest/${from}`);
+        const data = await response.json();
+
+        const rate = data.rates[to];
+        const result = (amount * rate).toFixed(2);
+
+        document.getElementById("result").textContent = 
+          `${amount} ${from} = ${result} ${to}`;
+      } catch (error) {
+        document.getElementById("result").textContent = 
+          "Error fetching exchange rate. Try again later.";
+      }
+    }
+  </script>
+</body>
+</html>
